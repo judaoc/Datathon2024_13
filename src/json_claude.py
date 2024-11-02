@@ -6,7 +6,7 @@ def initialize_bedrock():
     config = Config(
         region_name='us-west-2',
         retries={
-            'max_attempts': 3,
+            'max_attempts': 9,
             'mode': 'standard'
         }
     )
@@ -17,16 +17,16 @@ def initialize_bedrock():
     )
     return bedrock
 
-def get_claude_response(bedrock_client, data, temperature=0.7):
+def get_claude_response(bedrock_client, data, temperature=0.9):
     if isinstance(data, dict):
         json_str = json.dumps(data, indent=2, ensure_ascii=False)
-        json_prompt = f"Voici les données JSON à analyser:\n```json\n{json_str}\n```\nMerci de fournir une analyse très brève de ces données financières. Assure toi aussi de soigner ta mise en page."
+        json_prompt = f"Voici les données JSON à analyser:\n```json\n{json_str}\n```\nMerci de fournir une analyse très brève de ces données financières. Utilise une police uniforme sous forme de texte normal, sans annoncer ce que tu fais."
     else:
         json_prompt = data
 
     body = json.dumps({
         "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 200000,
+        "max_tokens": 1000,
         "messages": [
             {
                 "role": "user",
