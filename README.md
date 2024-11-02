@@ -1,1 +1,2 @@
-# Datathon2024_13
+# Datathon de Polyfinance 2024
+# Équipe 13
