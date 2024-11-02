@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+from json_claude import analyze_json
+
 
 st.title("Recherchez une action")
 action = st.text_input("Entrez le nom de l'action")
@@ -24,4 +26,8 @@ if action:
     st.dataframe(df)
 
     st.subheader("Graphique des prix de clôture")
-    st.line_chart(df.set_index("Date")["Prix de clôture"])
+    st.line_chart(df.set_index("Date")["Prix de clôture"])    
+
+    st.subheader("Analyse de Claude :")
+    response = analyze_json()  # Appel de la fonction d'analyse
+    st.write(response)  # Affiche la réponse dans l'interface Streamlit
