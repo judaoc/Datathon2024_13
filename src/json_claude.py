@@ -13,7 +13,7 @@ def initialize_bedrock():
 def get_claude_response(bedrock_client, data, temperature=0.0):
     if isinstance(data, dict):
         json_str = json.dumps(data, indent=2, ensure_ascii=False)
-        json_prompt = f"Voici les données JSON à analyser:\n```json\n{json_str}\n```\nMerci de fournir une analyse très brève de ces données financières."
+        json_prompt = f"Voici les données JSON à analyser:\n```json\n{json_str}\n```\nMerci de fournir une analyse très brève de ces données financières. Utilise une police uniforme sous forme de texte normal, sans annoncer ce que tu fais."
     else:
         json_prompt = data
     body = json.dumps({

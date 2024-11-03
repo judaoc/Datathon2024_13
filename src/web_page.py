@@ -50,6 +50,6 @@ if action:
         st.line_chart(history['Close'])
 
     write_financial_report(action)
-    response = analyze_json(f'{action}_AnnualFinancialReport.json')
     st.subheader("Analyse de Claude :")
+    response = analyze_json(f'{action}_AnnualFinancialReport.json')
     st.write(response)
