@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
+import pandas_ta as ta  # Importer Pandas TA
 
 from data_request import getFinancialReport, getTrendy, getNews
 from json_claude import analyze_json_data
@@ -13,23 +14,49 @@ if action:
     ticker = yf.Ticker(action)
     company_info = ticker.info
 
-    # Collapsible section for company information
+    # Section pour les informations de l'entreprise
     with st.expander(f"Entreprise : {company_info.get('shortName', 'Nom indisponible')}"):
         description = company_info.get('longBusinessSummary', 'Description indisponible')
         
         description_placeholder = st.empty()
-        if len(description) > 300:
-            short_description = description[:300] + "..."
-        else:
-            short_description = description
-
+        short_description = description[:300] + "..." if len(description) > 300 else description
         description_placeholder.write(short_description)
 
         show_full_description = st.checkbox("Voir plus")
         if show_full_description:
             description_placeholder.write(description)
 
-    # Collapsible section for interactive price and volume chart
+    # Section pour les principaux actionnaires
+    with st.expander("Principaux actionnaires"):
+        try:
+            holders = ticker.institutional_holders
+            if holders is not None and not holders.empty:
+                st.write("Voici les principaux actionnaires institutionnels :")
+                for index, row in holders.iterrows():
+                    holder_name = row.get('Holder', 'Nom indisponible')
+                    holder_percentage = row.get('pctHeld', 0) * 100  # Convertir en pourcentage
+                    st.write(f"- {holder_name}: {holder_percentage:.4f}%")
+            else:
+                st.write("Informations sur les principaux actionnaires non disponibles.")
+        except Exception as e:
+            st.write("Erreur lors de la récupération des actionnaires :", e)
+
+    # Section pour les indices financiers
+    with st.expander("Indices financiers (RSI, MACD, OBV)"):
+        history = ticker.history(period="1y")  # Vous pouvez ajuster la période ici
+
+        # Calcul du RSI, MACD et OBV avec Pandas TA
+        rsi = ta.rsi(history['Close'], length=14)
+        macd = ta.macd(history['Close'])
+        obv = ta.obv(history['Close'], history['Volume'])
+
+        # Affichage des valeurs les plus récentes
+        st.write(f"RSI (14 jours): {rsi.iloc[-1]:.2f}")
+        st.write(f"MACD: {macd['MACD_12_26_9'].iloc[-1]:.2f}")
+        st.write(f"Ligne de signal MACD: {macd['MACDs_12_26_9'].iloc[-1]:.2f}")
+        st.write(f"OBV: {obv.iloc[-1]:.2f}")
+
+    # Section pour le graphique interactif des prix de clôture et du volume
     with st.expander("Graphique interactif des prix de clôture et du volume"):
         periode = st.selectbox(
             "Sélectionnez une période pour afficher les données :",
@@ -87,7 +114,7 @@ if action:
 
         st.plotly_chart(fig)
 
-    # Collapsible section for financial report analysis
+    # Section pour l'analyse financière par Claude
     with st.expander("Analyse de Claude :"):
         analysis_placeholder = st.empty()
         analysis_placeholder.write("Analyse en cours...")
@@ -96,6 +123,7 @@ if action:
         response = analyze_json_data(financialReport, action)
         analysis_placeholder.write(response)
 
+# Barre latérale pour afficher les actions tendances et les articles d'actualité
 with st.sidebar:
     st.title("À la une !")
     trendy = getTrendy()
