@@ -50,7 +50,7 @@ if action:
 
     write_financial_report(action)
     st.subheader("Analyse de Claude :")
-    response = analyze_json(f'{action}_AnnualFinancialReport.json')
+    response = analyze_json(f'../data/{action}_AnnualFinancialReport.json')
     st.write(response)
 
 with st.sidebar:

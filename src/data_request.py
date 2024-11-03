@@ -23,7 +23,7 @@ def get_cash_flow_statement(ticker):
 
 def write_financial_report(ticker):
     # Définir le dossier de destination
-    data_directory = 'data'
+    data_directory = '../data'
     
     # S'assurer que le dossier existe
     os.makedirs(data_directory, exist_ok=True)
