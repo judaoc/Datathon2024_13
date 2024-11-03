@@ -2,8 +2,9 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
+import re
 
-from data_request import getFinancialReport, getTrendy, getNews
+from data_request import getFinancialReport, getTrendy, getNews, getSpecificNews
 from json_claude import analyze_json_data
 
 st.title("Recherchez une action")
@@ -87,7 +88,18 @@ if action:
 
         st.plotly_chart(fig)
 
-    # Collapsible section for financial report analysis
+    def cleanTitle(article_text):
+        cleaned_text = re.sub(r'\s+', ' ', article_text.replace('\n', ' '))
+        return cleaned_text
+        
+    with st.expander("Articles pertinents :"):
+        news_placeholder = st.empty()
+        news_placeholder.write("Accès à l'actualité...")
+        news = getSpecificNews("ffa0ad83fa8c4d87bef0c77c3fe41eeb", company_info.get('symbol'))
+        news_placeholder.empty()
+        articles_list = "\n".join([f"- [{cleanTitle(title).strip()}]({url})" for title, url in news])
+        news_placeholder.markdown(articles_list)
+
     with st.expander("Analyse de Claude :"):
         analysis_placeholder = st.empty()
         analysis_placeholder.write("Analyse en cours...")
@@ -95,6 +107,7 @@ if action:
         financialReport = getFinancialReport(action)
         response = analyze_json_data(financialReport, action)
         analysis_placeholder.write(response)
+
 
 with st.sidebar:
     st.title("À la une !")

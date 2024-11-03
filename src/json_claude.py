@@ -34,3 +34,26 @@ def get_claude_response(bedrock_client, data, ticker, temperature=0.0):
 def analyze_json_data(data, ticker):
     bedrock_client = initialize_bedrock()
     return get_claude_response(bedrock_client, data, ticker)
+
+def get_claude_response_articles(bedrock_client, data, ticker, temperature=0.0):
+
+    json_str = json.dumps(data, indent=2, ensure_ascii=False)
+    json_prompt = (
+        f"Voici des articles à propose de l'entreprise {ticker}:\n"
+        f"```json\n{json_str}\n```\n"
+        "Retourne moi les 3 articles les plus pertinents d'un point de vu financier, séparer par un espace et en commençant l'indexisation par la position 0."
+        "Tu ne peux pas envoyer de lettres ou de texte. Si rien de convient retourne rien."
+    )
+    body = json.dumps({
+        "anthropic_version": "bedrock-2023-05-31",
+        "max_tokens": 1000,
+        "messages": [{"role": "user", "content": json_prompt}],
+        "temperature": temperature
+    })
+    response = bedrock_client.invoke_model(modelId='anthropic.claude-3-5-sonnet-20240620-v1:0', body=body)
+    response_body = json.loads(response.get('body').read())
+    return response_body['content'][0]['text']
+
+def analyzeArticles(data, ticker):
+    bedrock_client = initialize_bedrock()
+    return get_claude_response_articles(bedrock_client, data, ticker).split()
