@@ -4,7 +4,7 @@ from yahoo_fin import stock_info as si
 import json
 import pandas as pd
 from io import StringIO
-import os
+import requests
 
 def getBalanceSheet(ticker):
     data = yf.Ticker(ticker)
@@ -71,4 +71,15 @@ si._raw_get_daily_info = patched_raw_get_daily_info
 
 def getTrendy():
     df = si.get_day_most_active()
-    return df.head(10)
+    return df.head(8)
+
+def getNews(api_key):
+    url = f"https://newsapi.org/v2/everything?q=finance&sortBy=publishedAt&language=en&apiKey={api_key}"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        articles = response.json().get('articles', [])[:5]
+        return [(article['title'], article['url']) for article in articles]
+    else:
+        print("error:", response.status_code)
+        return []
