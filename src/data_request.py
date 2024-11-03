@@ -4,6 +4,7 @@ from yahoo_fin import stock_info as si
 import json
 import pandas as pd
 from io import StringIO
+import os
 
 def convert_to_json(data):
     return data.to_json()
@@ -21,12 +22,26 @@ def get_cash_flow_statement(ticker):
     return convert_to_json(data.cashflow)
 
 def write_financial_report(ticker):
+    # Définir le dossier de destination
+    data_directory = 'data'
+    
+    # S'assurer que le dossier existe
+    os.makedirs(data_directory, exist_ok=True)
+
+    # Créer le chemin complet pour le fichier
+    filename = os.path.join(data_directory, f'{ticker}_AnnualFinancialReport.json')
+
+    # Supprimer le fichier existant s'il existe
+    if os.path.exists(filename):
+        os.remove(filename)
+
     financial_report_json = {
         "BalanceSheet": get_balance_sheet(ticker),
         "IncomeStatement": get_income_statement(ticker),
         "CashFlowStatement": get_cash_flow_statement(ticker)
     }
-    with open(f'{ticker}_AnnualFinancialReport.json', 'w') as file:
+    
+    with open(filename, 'w') as file:
         json.dump(financial_report_json, file, indent=4)
 
 def patched_raw_get_daily_info(url):
