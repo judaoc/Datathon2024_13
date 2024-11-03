@@ -1,0 +1,165 @@
+openapi: 3.0.3
+info:
+  title: Financial Analyst Data API
+  description: |-
+    This is an API to fetch and add financial data for specific companies.
+  version: 1.0.0
+
+paths:
+  /inflation:
+    get:
+      tags: 
+        - inflation
+      summary: Retrieves inflation data for a specific company
+      description: get information from s3 bucket to analyze inflation and its effect on a stock
+      operationId: getInflation
+      parameters:
+        - name: company_ticker
+          in: query
+          description: Ticker of the company
+          required: true
+          schema:
+            type: string
+        - name: inflation_percentage
+          in: query
+          description: The inflation percentage
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: start_date
+          in: query
+          description: The start date for the information retrieval
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Inflation information retrieved successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  inflation_historical_data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        historical_data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              date: 
+                                type: string
+                                format: date
+                              open:
+                                type: number
+                                format: float
+                              high:
+                                type: number
+                                format: float
+                              low:
+                                type: number
+                                format: float
+                              close:
+                                type: number
+                                format: float
+                              volume:
+                                type: number
+                                format: int
+                              dividends:
+                                type: number
+                                format: float
+                              stock_splits:
+                                type: number
+                                format: float
+                        date:
+                          type: string
+                          format: date
+                        inflation_rate:
+                          type: number
+                          format: float
+        '400':
+          description: Bad Request. One or more required fields are missing or invalid
+
+  /interest:
+    get:
+      tags: 
+        - interest
+      summary: Retrieves interest data for a specific company
+      description: get information from s3 bucket to analyze interest and its effect on a stock
+      operationId: getInterest
+      parameters:
+        - name: company_ticker
+          in: query
+          description: Ticker of the company
+          required: true
+          schema:
+            type: string
+        - name: interest_percentage
+          in: query
+          description: The interest percentage
+          required: true
+          schema:
+            type: number
+            format: float
+        - name: start_date
+          in: query
+          description: The start date for the information retrieval
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Interest information retrieved successfully
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  inflation_historical_data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        historical_data:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              date: 
+                                type: string
+                                format: date
+                              open:
+                                type: number
+                                format: float
+                              high:
+                                type: number
+                                format: float
+                              low:
+                                type: number
+                                format: float
+                              close:
+                                type: number
+                                format: float
+                              volume:
+                                type: number
+                                format: int
+                              dividends:
+                                type: number
+                                format: float
+                              stock_splits:
+                                type: number
+                                format: float
+                        date:
+                          type: string
+                          format: date
+                        inflation_rate:
+                          type: number
+                          format: float
+        '400':
+          description: Bad Request. One or more required fields are missing or invalid
