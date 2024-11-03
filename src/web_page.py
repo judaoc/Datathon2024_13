@@ -1,8 +1,10 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-from data_request import write_financial_report, get_trendy
-from json_claude import analyze_json
+import plotly.graph_objs as go
+
+from data_request import getFinancialReport, getTrendy
+from json_claude import analyze_json_data
 
 st.title("Recherchez une action")
 action = st.text_input("Entrez le nom de l'action")
@@ -15,47 +17,96 @@ if action:
     description = company_info.get('longBusinessSummary', 'Description indisponible')
     st.write("Description :")
 
-    # Créer un espace réservé pour la description
     description_placeholder = st.empty()
 
-    # Afficher la description courte par défaut
     if len(description) > 300:
         short_description = description[:300] + "..."
     else:
         short_description = description
 
-    # Afficher la description dans l'espace réservé
     description_placeholder.write(short_description)
 
-    # Placer la case à cocher en dessous de la description
     show_full_description = st.checkbox("Voir plus")
 
-    # Mettre à jour la description si la case est cochée
     if show_full_description:
         description_placeholder.write(description)
 
-    history = ticker.history(period="1y")
-    st.subheader("Historique des prix et du volume")
+    # Ajout de l'élément de sélection de période juste avant le graphique
+    periode = st.selectbox(
+        "Sélectionnez une période pour afficher les données :",
+        options=["1 mois", "3 mois", "6 mois", "1 an", "5 ans", "10 ans"]
+    )
 
-    # Créer deux colonnes pour le tableau et le graphique
-    col1, col2 = st.columns(2)
+    # Dictionnaire pour mapper les options du selectbox avec les périodes de yfinance
+    periode_mapping = {
+        "1 mois": "1mo",
+        "3 mois": "3mo",
+        "6 mois": "6mo",
+        "1 an": "1y",
+        "5 ans": "5y",
+        "10 ans": "10y"
+    }
 
-    with col1:
-        st.write("**Tableau des prix de clôture et du volume**")
-        st.dataframe(history[['Close', 'Volume']])
+    # Récupération de l'historique en fonction de la période sélectionnée
+    selected_period = periode_mapping[periode]
+    history = ticker.history(period=selected_period)
 
-    with col2:
-        st.write("**Graphique des prix de clôture**")
-        st.line_chart(history['Close'])
+    st.subheader("Graphique interactif des prix de clôture et du volume")
 
-    write_financial_report(action)
+    # Création du graphique interactif avec deux axes Y
+    fig = go.Figure()
+
+    # Tracé du prix de clôture sur l'axe de gauche
+    fig.add_trace(go.Scatter(
+        x=history.index,
+        y=history['Close'],
+        mode='lines',
+        name='Prix de clôture',
+        line=dict(color='lightblue'),
+        yaxis="y1"
+    ))
+
+    # Tracé du volume sur l'axe de droite
+    fig.add_trace(go.Bar(
+        x=history.index,
+        y=history['Volume'] / 1_000_000,  # Conversion en millions
+        name='Volume (en millions)',
+        marker=dict(color='gray', opacity=0.3),
+        yaxis="y2"
+    ))
+
+    # Mise en page et configuration des deux axes Y
+    fig.update_layout(
+        title="Historique des prix de clôture et du volume",
+        xaxis=dict(title="Date"),
+        yaxis=dict(
+            title="Prix de clôture",
+            titlefont=dict(color="gray"),
+            tickfont=dict(color="gray"),
+            side="left"
+        ),
+        yaxis2=dict(
+            title="Volume (en millions)",
+            titlefont=dict(color="gray"),
+            tickfont=dict(color="gray"),
+            overlaying="y",
+            side="right"
+        ),
+        legend=dict(x=0, y=1.2)
+    )
+
+    # Affichage du graphique interactif
+    st.plotly_chart(fig)
+
+    # Génération et analyse du rapport financier
+    financialReport = getFinancialReport(action)
     st.subheader("Analyse de Claude :")
-    response = analyze_json(f'../data/{action}_AnnualFinancialReport.json')
+    response = analyze_json_data(financialReport, action)
     st.write(response)
 
 with st.sidebar:
     st.title("À la une !")
-    trendy = get_trendy()
+    trendy = getTrendy()
 
     # Display each stock with its price change, one over the other
     for index, row in trendy.iterrows():

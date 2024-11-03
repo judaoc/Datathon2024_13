@@ -6,43 +6,34 @@ import pandas as pd
 from io import StringIO
 import os
 
-def convert_to_json(data):
-    return data.to_json()
-
-def get_balance_sheet(ticker):
+def getBalanceSheet(ticker):
     data = yf.Ticker(ticker)
-    return convert_to_json(data.balance_sheet)
+    return data.balance_sheet
 
-def get_income_statement(ticker):
+def getIncomeStatement(ticker):
     data = yf.Ticker(ticker)
-    return convert_to_json(data.financials)
+    return data.financials
 
-def get_cash_flow_statement(ticker):
+def getCashFlowStatement(ticker):
     data = yf.Ticker(ticker)
-    return convert_to_json(data.cashflow)
+    return data.cashflow
 
-def write_financial_report(ticker):
-    # Définir le dossier de destination
-    data_directory = '../data'
-    
-    # S'assurer que le dossier existe
-    os.makedirs(data_directory, exist_ok=True)
+def getFinancialReport(ticker):
+    dataBalanceSheet = getBalanceSheet(ticker)
+    dataIncomeStatement = getIncomeStatement(ticker)
+    dataCashFlowStatement = getCashFlowStatement(ticker)
 
-    # Créer le chemin complet pour le fichier
-    filename = os.path.join(data_directory, f'{ticker}_AnnualFinancialReport.json')
+    # Convertir les colonnes et les index en chaînes de caractères
+    for df in [dataBalanceSheet, dataIncomeStatement, dataCashFlowStatement]:
+        df.columns = df.columns.astype(str)
+        df.index = df.index.astype(str)
 
-    # Supprimer le fichier existant s'il existe
-    if os.path.exists(filename):
-        os.remove(filename)
-
-    financial_report_json = {
-        "BalanceSheet": get_balance_sheet(ticker),
-        "IncomeStatement": get_income_statement(ticker),
-        "CashFlowStatement": get_cash_flow_statement(ticker)
+    financialReport = {
+        "BalanceSheet": dataBalanceSheet.to_dict(),
+        "IncomeStatement": dataIncomeStatement.to_dict(),
+        "CashFlowStatement": dataCashFlowStatement.to_dict()
     }
-    
-    with open(filename, 'w') as file:
-        json.dump(financial_report_json, file, indent=4)
+    return financialReport
 
 def patched_raw_get_daily_info(url):
     session = HTMLSession()
@@ -78,6 +69,6 @@ def patched_raw_get_daily_info(url):
 # Replace the original function
 si._raw_get_daily_info = patched_raw_get_daily_info
 
-def get_trendy():
+def getTrendy():
     df = si.get_day_most_active()
     return df.head(10)
