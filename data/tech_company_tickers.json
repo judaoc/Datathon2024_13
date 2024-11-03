@@ -1,24 +1,23 @@
 {
-    "tech_companies": [
-      "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSM", "AVGO", "TSLA", "ORCL",
-      "AMD", "IBM", "INTC", "CSCO", "ADBE", "CRM", "QCOM", "TXN", "SAP", "SHOP",
-      "NOW", "INTU", "UBER", "SNOW", "PANW", "SQ", "ZM", "DOCU", "TWLO", "SPOT",
-      "NET", "CRWD", "OKTA", "DDOG", "MDB", "TEAM", "ZS", "FSLY", "SPLK", "ESTC",
-      "PLTR", "ASML", "LRCX", "KLAC", "AMAT", "MU", "NXPI", "STM", "MRVL", "ADI",
-      "SWKS", "MCHP", "ON", "MPWR", "QRVO", "SLAB", "SMTC", "TXN", "XLNX", "AVGO",
-      "NVDA", "AMD", "INTC", "QCOM", "MRVL", "ADI", "MCHP", "ON", "MPWR", "QRVO",
-      "SWKS", "SLAB", "SMTC", "TXN", "XLNX", "AVGO", "NVDA", "AMD", "INTC", "QCOM",
-      "MRVL", "ADI", "MCHP", "ON", "MPWR", "QRVO", "SWKS", "SLAB", "SMTC", "TXN",
-      "AKAM", "ANSS", "CDNS", "CDW", "CHKP", "CTXS", "FFIV", "FTNT", "JNPR", "KEYS",
-      "LOGI", "MSI", "NTAP", "PTC", "RNG", "SSNC", "STX", "SYMC", "TEL", "VRSN",
-      "WDC", "XRX", "ZBRA", "ZS", "ZI", "ZEN", "YELP", "YNDX", "WORK", "WDAY",
-      "VMW", "VEEV", "TWTR", "TTD", "TRMB", "TTWO", "TXN", "TXG", "TWLO", "TYL",
-      "UBER", "U", "UI", "UPST", "V", "VEEV", "VIRT", "VMW", "VRNS", "VRSK",
-      "VRSN", "VRTU", "VRTS", "VRTU", "VSH", "VSTO", "VTRS", "VZ", "W", "WAB",
-      "WAT", "WBA", "WDC", "WEC", "WELL", "WEN", "WEX", "WFC", "WHR", "WIT",
-      "WIX", "WLTW", "WM", "WMB", "WMT", "WORK", "WPC", "WRB", "WST", "WTW",
-      "WU", "WY", "WYNN", "XEL", "XLNX", "XOM", "XRAY", "XRX", "XYL", "YELP",
-      "YNDX", "YUM", "Z", "ZBH", "ZEN", "ZG", "ZI", "ZION", "ZM", "ZNGA"
-    ]
-  }
-  
+  "tech_companies": [
+    "AAPL", "MSFT", "NVDA", "GOOGL", "AMZN", "META", "TSM", "AVGO", "TSLA", "ORCL",
+    "AMD", "IBM", "INTC", "CSCO", "ADBE", "CRM", "QCOM", "TXN", "SAP", "SHOP",
+    "NOW", "INTU", "UBER", "SNOW", "PANW", "SQ", "ZM", "DOCU", "TWLO", "SPOT",
+    "NET", "CRWD", "OKTA", "DDOG", "MDB", "TEAM", "ZS", "FSLY", "SPLK", "ESTC",
+    "PLTR", "ASML", "LRCX", "KLAC", "AMAT", "MU", "NXPI", "STM", "MRVL", "ADI",
+    "SWKS", "MCHP", "ON", "MPWR", "QRVO", "SLAB", "SMTC", "TXN", "XLNX", "AVGO",
+    "NVDA", "AMD", "INTC", "QCOM", "MRVL", "ADI", "MCHP", "ON", "MPWR", "QRVO",
+    "SWKS", "SLAB", "SMTC", "TXN", "XLNX", "AVGO", "NVDA", "AMD", "INTC", "QCOM",
+    "MRVL", "ADI", "MCHP", "ON", "MPWR", "QRVO", "SWKS", "SLAB", "SMTC", "TXN",
+    "AKAM", "ANSS", "CDNS", "CDW", "CHKP", "CTXS", "FFIV", "FTNT", "JNPR", "KEYS",
+    "LOGI", "MSI", "NTAP", "PTC", "RNG", "SSNC", "STX", "SYMC", "TEL", "VRSN",
+    "WDC", "XRX", "ZBRA", "ZS", "ZI", "ZEN", "YELP", "YNDX", "WORK", "WDAY",
+    "VMW", "VEEV", "TWTR", "TTD", "TRMB", "TTWO", "TXN", "TXG", "TWLO", "TYL",
+    "UBER", "U", "UI", "UPST", "V", "VEEV", "VIRT", "VMW", "VRNS", "VRSK",
+    "VRSN", "VRTU", "VRTS", "VRTU", "VSH", "VSTO", "VTRS", "VZ", "W", "WAB",
+    "WAT", "WBA", "WDC", "WEC", "WELL", "WEN", "WEX", "WFC", "WHR", "WIT",
+    "WIX", "WLTW", "WM", "WMB", "WMT", "WORK", "WPC", "WRB", "WST", "WTW",
+    "WU", "WY", "WYNN", "XEL", "XLNX", "XOM", "XRAY", "XRX", "XYL", "YELP",
+    "YNDX", "YUM", "Z", "ZBH", "ZEN", "ZG", "ZI", "ZION", "ZM", "ZNGA"
+  ]
+}

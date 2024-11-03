@@ -10,17 +10,17 @@ def convertToJson(data):
 #returns the balance sheet in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getBalanceSheet(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.balance_sheet)
+    return (data.balance_sheet).to_json()
 
 #returns the income statement in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getIncomeStatement(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.financials)
+    return (data.financials).to_json()
 
 #returns the cash flow statement in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getCashFlowStatement(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.cashflow)
+    return (data.cashflow).to_json()
 
 #returns the info in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getInfo(ticker):
@@ -57,7 +57,3 @@ def getIndicators(dataframe):
 def getMACD(dataframe):
     macd = ta.macd(dataframe["Close"])
     return macd
-
-
-df = getInfo("AAPL")
-print(df)
