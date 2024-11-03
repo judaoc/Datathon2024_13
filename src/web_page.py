@@ -3,7 +3,7 @@ import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
 
-from data_request import getFinancialReport, getTrendy
+from data_request import getFinancialReport, getTrendy, getNews
 from json_claude import analyze_json_data
 
 st.title("Recherchez une action")
@@ -13,9 +13,9 @@ if action:
     ticker = yf.Ticker(action)
     company_info = ticker.info
 
-    st.write(f"Entreprise : {company_info.get('shortName', 'Nom indisponible')}")
+    st.subheader(f"Entreprise : {company_info.get('shortName', 'Nom indisponible')}")
     description = company_info.get('longBusinessSummary', 'Description indisponible')
-    st.write("Description :")
+    st.subheader("Description :")
 
     description_placeholder = st.empty()
 
@@ -30,6 +30,8 @@ if action:
 
     if show_full_description:
         description_placeholder.write(description)
+
+    st.subheader("Graphique interactif des prix de clôture et du volume")
 
     # Ajout de l'élément de sélection de période juste avant le graphique
     periode = st.selectbox(
@@ -50,8 +52,6 @@ if action:
     # Récupération de l'historique en fonction de la période sélectionnée
     selected_period = periode_mapping[periode]
     history = ticker.history(period=selected_period)
-
-    st.subheader("Graphique interactif des prix de clôture et du volume")
 
     # Création du graphique interactif avec deux axes Y
     fig = go.Figure()
@@ -119,3 +119,10 @@ with st.sidebar:
 
         # Display with HTML styling
         st.markdown(f"{stock_name}: <span style='color:{color};'>{price_change}</span>", unsafe_allow_html=True)
+
+
+    st.title("Articles")
+    news = getNews("ffa0ad83fa8c4d87bef0c77c3fe41eeb")
+
+    for title, url in news:
+        st.sidebar.markdown(f"[{title}]({url})")
