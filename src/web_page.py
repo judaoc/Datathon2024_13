@@ -89,12 +89,7 @@ if action:
         st.plotly_chart(fig)
 
     def cleanTitle(article_text):
-        # Remplacer les retours à la ligne et les multiples espaces par un espace unique
         cleaned_text = re.sub(r'\s+', ' ', article_text.replace('\n', ' '))
-        
-        # Formatage des chiffres pour ajouter des espaces avant les unités (si nécessaire)
-        cleaned_text = re.sub(r'(\d+)([B])', r'\1 \2', cleaned_text)
-        cleaned_text = re.sub(r'(\d+)([M])', r'\1 \2', cleaned_text)
         return cleaned_text
         
     with st.expander("Articles pertinents :"):
