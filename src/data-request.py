@@ -1,6 +1,7 @@
 import yfinance as yf
 import pandas as pd
 import json
+import pandas_ta as ta
 
 #converts the data to JSON format
 def convertToJson(data):
@@ -41,6 +42,25 @@ def writeFinancialReport(dataBalanceSheet, dataIncomeStatement, dataCashFlowStat
     with open(ticker+'_AnnualFinancialReport.json', 'w') as file:
         json.dump(financialReport_json, file, indent=4)
 
+#returns the historical data in Dataframe from yfinance (ticker is the symbol, example: 'AAPL', period is the time period, example: '1y', interval is the time interval, example: '1d')
+def getHistoricalData(ticker, period = '1y', interval = '1d'):
+    data = yf.Ticker(ticker)
+    return data.history(period=period, interval=interval)
+
+#indicators (RSI, MACD, OBV)
+def getIndicators(dataframe):
+    dataframe["RSI_14"] = ta.rsi(dataframe["Close"], length=14)
+    dataframe["OBV"] = ta.obv(dataframe["Close"], dataframe["Volume"])
+    # macd = ta.trend.MACD(dataframe['Close'], fast=12, slow=26, signal=9)
+    # macd = ta.macd(dataframe["Close"])
+    macd = ta.macd(dataframe['Close'], fast=12, slow=26, signal=9)
+    dataframe = pd.concat([dataframe, macd], axis=1)
+    #print(macd)
+    dataframe = pd.concat([dataframe, macd], axis=1)
+    return dataframe
+def getMACD(dataframe):
+    macd = ta.macd(dataframe["Close"])
+    return macd
 #example of how to use the functions
 # symbol = 'AAPL'
 # apple = yf.Ticker(symbol)
@@ -48,3 +68,9 @@ def writeFinancialReport(dataBalanceSheet, dataIncomeStatement, dataCashFlowStat
 # info = getInfo(symbol)
 # with open('info.json', 'w') as file:
 #     json.dump(news, file, indent=4)
+
+dataframe = getHistoricalData('AAPL', period='1y', interval='1d')
+#dataframe0 = getMACD(dataframe)
+dataframe1 = getIndicators(dataframe)
+
+print(dataframe1.columns)
