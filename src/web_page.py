@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
-import pandas_ta as ta  # Importer Pandas TA
+import pandas_ta as ta  # Assurez-vous que pandas_ta est bien installé
 
 from data_request import getFinancialReport, getTrendy, getNews
 from json_claude import analyze_json_data
@@ -42,7 +42,7 @@ if action:
             st.write("Erreur lors de la récupération des actionnaires :", e)
 
     # Section pour les indices financiers
-    with st.expander("Indices financiers (RSI, MACD, OBV)"):
+    with st.expander("Principaux indices financiers"):
         history = ticker.history(period="1y")  # Vous pouvez ajuster la période ici
 
         # Calcul du RSI, MACD et OBV avec Pandas TA
@@ -55,9 +55,30 @@ if action:
         st.write(f"MACD: {macd['MACD_12_26_9'].iloc[-1]:.2f}")
         st.write(f"Ligne de signal MACD: {macd['MACDs_12_26_9'].iloc[-1]:.2f}")
         st.write(f"OBV: {obv.iloc[-1]:.2f}")
+        peg_ratio = company_info.get('pegRatio', 'Non disponible')
+        st.write(f"PEG Ratio : {peg_ratio}")
+
+        # Graphique RSI
+        fig_rsi = go.Figure()
+        fig_rsi.add_trace(go.Scatter(x=history.index, y=rsi, mode='lines', name='RSI'))
+        fig_rsi.update_layout(title="RSI (14 jours)", xaxis_title="Date", yaxis_title="RSI")
+        st.plotly_chart(fig_rsi)
+
+        # Graphique MACD
+        fig_macd = go.Figure()
+        fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACD_12_26_9'], mode='lines', name='MACD'))
+        fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACDs_12_26_9'], mode='lines', name='Signal Line'))
+        fig_macd.update_layout(title="MACD et ligne de signal", xaxis_title="Date", yaxis_title="MACD")
+        st.plotly_chart(fig_macd)
+
+        # Graphique OBV
+        fig_obv = go.Figure()
+        fig_obv.add_trace(go.Scatter(x=history.index, y=obv, mode='lines', name='OBV'))
+        fig_obv.update_layout(title="OBV (On-Balance Volume)", xaxis_title="Date", yaxis_title="OBV")
+        st.plotly_chart(fig_obv)
 
     # Section pour le graphique interactif des prix de clôture et du volume
-    with st.expander("Graphique interactif des prix de clôture et du volume"):
+    with st.expander("Prix de clôture et volume"):
         periode = st.selectbox(
             "Sélectionnez une période pour afficher les données :",
             options=["1 mois", "3 mois", "6 mois", "1 an", "5 ans", "10 ans"]
