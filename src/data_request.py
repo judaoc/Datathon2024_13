@@ -1,61 +1,30 @@
 import yfinance as yf
-import pandas as pd
-import json
-import pandas_ta as ta
 
-#converts the data to JSON format
-def convertToJson(data):
-    return data.to_json()
-
-#returns the balance sheet in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getBalanceSheet(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.balance_sheet)
+    return data.balance_sheet
 
-#returns the income statement in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getIncomeStatement(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.financials)
+    return data.financials
 
-#returns the cash flow statement in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getCashFlowStatement(ticker):
     data = yf.Ticker(ticker)
-    return convertToJson(data.cashflow)
+    return data.cashflow
 
-#returns the info in JSON from yfinance (ticker is the symbol, example: 'AAPL')
-def getInfo(ticker):
-    data = yf.Ticker(ticker)
-    return data.info
+def getFinancialReport(ticker):
+    dataBalanceSheet = getBalanceSheet(ticker)
+    dataIncomeStatement = getIncomeStatement(ticker)
+    dataCashFlowStatement = getCashFlowStatement(ticker)
 
-#returns the news of the company in JSON from yfinance (ticker is the symbol, example: 'AAPL')
-def getNews(ticker):
-    data = yf.Ticker(ticker)
-    return data.news
+    # Convertir les colonnes et les index en chaînes de caractères
+    for df in [dataBalanceSheet, dataIncomeStatement, dataCashFlowStatement]:
+        df.columns = df.columns.astype(str)
+        df.index = df.index.astype(str)
 
-#write the financial report in a JSON file
-def writeFinancialReport(dataBalanceSheet, dataIncomeStatement, dataCashFlowStatement,ticker):
-    financialReport_json = {
-        "BalanceSheet": dataBalanceSheet,
-        "IncomeStatement": dataIncomeStatement,
-        "CashFlowStatement": dataCashFlowStatement
+    financialReport = {
+        "BalanceSheet": dataBalanceSheet.to_dict(),
+        "IncomeStatement": dataIncomeStatement.to_dict(),
+        "CashFlowStatement": dataCashFlowStatement.to_dict()
     }
-    with open(ticker+'_AnnualFinancialReport.json', 'w') as file:
-        json.dump(financialReport_json, file, indent=4)
-
-#returns the historical data in Dataframe from yfinance (ticker is the symbol, example: 'AAPL', period is the time period, example: '1y', interval is the time interval, example: '1d')
-def getHistoricalData(ticker, period = '1y', interval = '1d'):
-    data = yf.Ticker(ticker)
-    return data.history(period=period, interval=interval)
-
-#indicators (RSI, MACD, OBV)
-def getIndicators(dataframe):
-    dataframe["RSI_14"] = ta.rsi(dataframe["Close"], length=14)
-    dataframe["OBV"] = ta.obv(dataframe["Close"], dataframe["Volume"])
-    macd = ta.macd(dataframe['Close'], fast=12, slow=26, signal=9)
-    dataframe = pd.concat([dataframe, macd], axis=1)
-    dataframe = pd.concat([dataframe, macd], axis=1)
-    return dataframe
-
-def getMACD(dataframe):
-    macd = ta.macd(dataframe["Close"])
-    return macd
+    return financialReport
