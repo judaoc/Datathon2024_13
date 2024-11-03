@@ -19,79 +19,69 @@ if action:
         if "symbol" not in company_info or company_info.get('symbol') is None:
             st.subheader("Ticker invalide, veuillez réessayer.")
         else:
-        
             with st.expander(f"Entreprise : {company_info.get('shortName', 'Nom indisponible')}"):
                 description = company_info.get('longBusinessSummary', 'Description indisponible')
                 
                 description_placeholder = st.empty()
-                if len(description) > 300:
-                    short_description = description[:300] + "..."
-                else:
-                    short_description = description
-
+                short_description = description[:300] + "..." if len(description) > 300 else description
                 description_placeholder.write(short_description)
 
                 show_full_description = st.checkbox("Voir plus")
                 if show_full_description:
                     description_placeholder.write(description)
 
-    # Section pour les principaux actionnaires
-    with st.expander("Principaux actionnaires"):
-        try:
-            holders = ticker.institutional_holders
-            if holders is not None and not holders.empty:
-                st.write("Voici les principaux actionnaires institutionnels :")
-                for index, row in holders.iterrows():
-                    holder_name = row.get('Holder', 'Nom indisponible')
-                    holder_percentage = row.get('pctHeld', 0) * 100  # Convertir en pourcentage
-                    st.write(f"- {holder_name}: {holder_percentage:.4f}%")
-            else:
-                st.write("Informations sur les principaux actionnaires non disponibles.")
-        except Exception as e:
-            st.write("Erreur lors de la récupération des actionnaires :", e)
+            # Section pour les principaux actionnaires
+            with st.expander("Principaux actionnaires"):
+                try:
+                    holders = ticker.institutional_holders
+                    if holders is not None and not holders.empty:
+                        st.write("Voici les principaux actionnaires institutionnels :")
+                        for index, row in holders.iterrows():
+                            holder_name = row.get('Holder', 'Nom indisponible')
+                            holder_percentage = row.get('pctHeld', 0) * 100  # Convertir en pourcentage
+                            st.write(f"- {holder_name}: {holder_percentage:.4f}%")
+                    else:
+                        st.write("Informations sur les principaux actionnaires non disponibles.")
+                except Exception as e:
+                    st.write("Erreur lors de la récupération des actionnaires :", e)
 
-    # Section pour les indices financiers
-    with st.expander("Principaux indices financiers"):
-        history = ticker.history(period="1y")  # Vous pouvez ajuster la période ici
+            # Section pour les indices financiers
+            with st.expander("Principaux indices financiers"):
+                history = ticker.history(period="1y")  # Vous pouvez ajuster la période ici
 
-        # Calcul du RSI, MACD et OBV avec Pandas TA
-        rsi = ta.rsi(history['Close'], length=14)
-        macd = ta.macd(history['Close'])
-        obv = ta.obv(history['Close'], history['Volume'])
+                # Calcul du RSI, MACD et OBV avec Pandas TA
+                rsi = ta.rsi(history['Close'], length=14)
+                macd = ta.macd(history['Close'])
+                obv = ta.obv(history['Close'], history['Volume'])
 
-        # Affichage des valeurs les plus récentes
-        st.write(f"RSI (14 jours): {rsi.iloc[-1]:.2f}")
-        st.write(f"MACD: {macd['MACD_12_26_9'].iloc[-1]:.2f}")
-        st.write(f"Ligne de signal MACD: {macd['MACDs_12_26_9'].iloc[-1]:.2f}")
-        st.write(f"OBV: {obv.iloc[-1]:.2f}")
-        peg_ratio = company_info.get('pegRatio', 'Non disponible')
-        st.write(f"PEG Ratio : {peg_ratio}")
+                # Affichage des valeurs les plus récentes
+                st.write(f"RSI (14 jours): {rsi.iloc[-1]:.2f}")
+                st.write(f"MACD: {macd['MACD_12_26_9'].iloc[-1]:.2f}")
+                st.write(f"Ligne de signal MACD: {macd['MACDs_12_26_9'].iloc[-1]:.2f}")
+                st.write(f"OBV: {obv.iloc[-1]:.2f}")
+                peg_ratio = company_info.get('pegRatio', 'Non disponible')
+                st.write(f"PEG Ratio : {peg_ratio}")
 
-        # Graphique RSI
-        fig_rsi = go.Figure()
-        fig_rsi.add_trace(go.Scatter(x=history.index, y=rsi, mode='lines', name='RSI'))
-        fig_rsi.update_layout(title="RSI (14 jours)", xaxis_title="Date", yaxis_title="RSI")
-        st.plotly_chart(fig_rsi)
+                # Graphique RSI
+                fig_rsi = go.Figure()
+                fig_rsi.add_trace(go.Scatter(x=history.index, y=rsi, mode='lines', name='RSI'))
+                fig_rsi.update_layout(title="RSI (14 jours)", xaxis_title="Date", yaxis_title="RSI")
+                st.plotly_chart(fig_rsi)
 
-        # Graphique MACD
-        fig_macd = go.Figure()
-        fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACD_12_26_9'], mode='lines', name='MACD'))
-        fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACDs_12_26_9'], mode='lines', name='Signal Line'))
-        fig_macd.update_layout(title="MACD et ligne de signal", xaxis_title="Date", yaxis_title="MACD")
-        st.plotly_chart(fig_macd)
+                # Graphique MACD
+                fig_macd = go.Figure()
+                fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACD_12_26_9'], mode='lines', name='MACD'))
+                fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACDs_12_26_9'], mode='lines', name='Signal Line'))
+                fig_macd.update_layout(title="MACD et ligne de signal", xaxis_title="Date", yaxis_title="MACD")
+                st.plotly_chart(fig_macd)
 
-        # Graphique OBV
-        fig_obv = go.Figure()
-        fig_obv.add_trace(go.Scatter(x=history.index, y=obv, mode='lines', name='OBV'))
-        fig_obv.update_layout(title="OBV (On-Balance Volume)", xaxis_title="Date", yaxis_title="OBV")
-        st.plotly_chart(fig_obv)
+                # Graphique OBV
+                fig_obv = go.Figure()
+                fig_obv.add_trace(go.Scatter(x=history.index, y=obv, mode='lines', name='OBV'))
+                fig_obv.update_layout(title="OBV (On-Balance Volume)", xaxis_title="Date", yaxis_title="OBV")
+                st.plotly_chart(fig_obv)
 
-    # Section pour le graphique interactif des prix de clôture et du volume
-    with st.expander("Prix de clôture et volume"):
-        periode = st.selectbox(
-            "Sélectionnez une période pour afficher les données :",
-            options=["1 mois", "3 mois", "6 mois", "1 an", "5 ans", "10 ans"]
-        )
+            # Section pour le graphique interactif des prix de clôture et du volume
             with st.expander("Graphique interactif des prix de clôture et du volume"):
                 periode = st.selectbox(
                     "Sélectionnez une période pour afficher les données :",
@@ -168,6 +158,7 @@ if action:
                 financialReport = getFinancialReport(action)
                 response = analyze_json_data(financialReport, action)
                 analysis_placeholder.write(response)
+                
     except Exception as e:
         st.subheader("Une erreur s'est produite lors de la récupération des données. Veuillez vérifier le ticker.")
         st.error(str(e))
