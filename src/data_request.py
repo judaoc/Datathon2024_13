@@ -5,7 +5,7 @@ import pandas_ta as ta
 
 #converts the data to JSON format
 def convertToJson(data):
-    return data.to_json()
+    return json.dumps(data)
 
 #returns the balance sheet in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getBalanceSheet(ticker):
@@ -25,22 +25,20 @@ def getCashFlowStatement(ticker):
 #returns the info in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getInfo(ticker):
     data = yf.Ticker(ticker)
-    return data.info
+    return convertToJson(data.info)
 
 #returns the news of the company in JSON from yfinance (ticker is the symbol, example: 'AAPL')
 def getNews(ticker):
     data = yf.Ticker(ticker)
-    return data.news
+    return convertToJson(data.news.to_json())
 
 #write the financial report in a JSON file
-def writeFinancialReport(dataBalanceSheet, dataIncomeStatement, dataCashFlowStatement,ticker):
-    financialReport_json = {
-        "BalanceSheet": dataBalanceSheet,
-        "IncomeStatement": dataIncomeStatement,
-        "CashFlowStatement": dataCashFlowStatement
+def writeFinancialReport(ticker):
+    return {
+        "BalanceSheet": getBalanceSheet(ticker),
+        "IncomeStatement": getIncomeStatement(ticker),
+        "CashFlowStatement": getCashFlowStatement(ticker)
     }
-    with open(ticker+'_AnnualFinancialReport.json', 'w') as file:
-        json.dump(financialReport_json, file, indent=4)
 
 #returns the historical data in Dataframe from yfinance (ticker is the symbol, example: 'AAPL', period is the time period, example: '1y', interval is the time interval, example: '1d')
 def getHistoricalData(ticker, period = '1y', interval = '1d'):
@@ -59,3 +57,7 @@ def getIndicators(dataframe):
 def getMACD(dataframe):
     macd = ta.macd(dataframe["Close"])
     return macd
+
+
+df = getInfo("AAPL")
+print(df)
