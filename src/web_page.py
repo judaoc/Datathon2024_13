@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-from data_request import write_financial_report
+from data_request import write_financial_report, get_trendy
 from json_claude import analyze_json
 
 st.title("Recherchez une action")
@@ -11,7 +11,6 @@ if action:
     ticker = yf.Ticker(action)
     company_info = ticker.info
 
-    st.write(f"Résultats pour : {action}")
     st.write(f"Entreprise : {company_info.get('shortName', 'Nom indisponible')}")
     description = company_info.get('longBusinessSummary', 'Description indisponible')
     st.write("Description :")
@@ -53,3 +52,19 @@ if action:
     st.subheader("Analyse de Claude :")
     response = analyze_json(f'{action}_AnnualFinancialReport.json')
     st.write(response)
+
+with st.sidebar:
+    st.title("À la une !")
+    trendy = get_trendy()
+
+    # Display each stock with its price change, one over the other
+    for index, row in trendy.iterrows():
+        stock_name = row['Symbol']  # Adjust to the correct column name
+        price_change = row['Price']  # Adjust to the correct column name
+
+        # Determine the color based on price change
+        price_change_value = float(price_change.split()[1])  # Extract the numeric part
+        color = 'green' if price_change_value > 0 else 'red'
+
+        # Display with HTML styling
+        st.markdown(f"{stock_name}: <span style='color:{color};'>{price_change}</span>", unsafe_allow_html=True)
