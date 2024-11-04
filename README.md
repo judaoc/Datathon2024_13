@@ -23,7 +23,7 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 -Vous devez utiliser la version de numpy 1.26.4 
  `pip install --force-reinstall numpy==1.26.4`
 
--`pip install pandas pandas_ta yfinance yahoo_fin streamlit python-dotenv plotly plotly.graph_objs lxml[html_clean] requests_html boto3 uuid`
+-`pip install pandas pandas_ta yfinance yahoo_fin streamlit python-dotenv plotly lxml[html_clean] requests_html boto3 uuid`
 
 
 ## Run le programme localement
