@@ -1,5 +1,3 @@
-import requests
-from datetime import datetime, timedelta, timezone
 import json
 from json_claude import analyzeArticles, analyzeSpecificArticles
 from yahoo_fin import news
