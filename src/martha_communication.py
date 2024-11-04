@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.INFO)
 def initialize_bedrock_agent_runtime():
     config = Config(
         region_name='us-west-2',
-        retries={'max_attempts': 10, 'mode': 'standard'}
+        retries={'max_attempts': 10000, 'mode': 'standard'}
     )
     return boto3.client('bedrock-agent-runtime', config=config)
 
