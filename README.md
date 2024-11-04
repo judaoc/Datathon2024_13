@@ -51,5 +51,7 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 ## Run le programme localement
 Vous devez être dans le dossier `src`
 
-`streamlit run src\web_page.py`
+**Il faut avoir des credentials valides AWS qu'il faut entrer dans la console dans la racine du projet**
+
+`streamlit run web_page.py`
 
