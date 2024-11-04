@@ -41,8 +41,6 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 
 -`pip install lxml[html_clean]`
 
--`pip install json`
-
 -`pip install requests_html`
 
 -`pip install boto3`
