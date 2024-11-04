@@ -2,11 +2,12 @@ import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objs as go
-import pandas_ta as ta  # Assurez-vous que pandas_ta est bien installé
 import re
 
-from data_request import getFinancialReport, getTrendy, getNews, getSpecificNews
+from data_fetch import getFinancialReport, getTrendy
+from news_request import getNews, getSpecificNews
 from json_claude import analyze_json_data
+from data_fetch import get_rsi, get_macd, get_obv
 
 st.title("Recherchez une action")
 action = st.text_input("Entrez le nom de l'action")
@@ -30,7 +31,6 @@ if action:
                 if show_full_description:
                     description_placeholder.write(description)
 
-            # Section pour les principaux actionnaires
             with st.expander("Principaux actionnaires"):
                 try:
                     holders = ticker.institutional_holders
@@ -38,23 +38,18 @@ if action:
                         st.write("Voici les principaux actionnaires institutionnels :")
                         for index, row in holders.iterrows():
                             holder_name = row.get('Holder', 'Nom indisponible')
-                            holder_percentage = row.get('pctHeld', 0) * 100  # Convertir en pourcentage
+                            holder_percentage = row.get('pctHeld', 0) * 100
                             st.write(f"- {holder_name}: {holder_percentage:.4f}%")
                     else:
                         st.write("Informations sur les principaux actionnaires non disponibles.")
                 except Exception as e:
                     st.write("Erreur lors de la récupération des actionnaires :", e)
 
-            # Section pour les indices financiers
             with st.expander("Principaux indices financiers"):
-                history = ticker.history(period="1y")  # Vous pouvez ajuster la période ici
+                rsi = get_rsi(action)
+                macd = get_macd(action)
+                obv = get_obv(action)
 
-                # Calcul du RSI, MACD et OBV avec Pandas TA
-                rsi = ta.rsi(history['Close'], length=14)
-                macd = ta.macd(history['Close'])
-                obv = ta.obv(history['Close'], history['Volume'])
-
-                # Affichage des valeurs les plus récentes
                 st.write(f"RSI (14 jours): {rsi.iloc[-1]:.2f}")
                 st.write(f"MACD: {macd['MACD_12_26_9'].iloc[-1]:.2f}")
                 st.write(f"Ligne de signal MACD: {macd['MACDs_12_26_9'].iloc[-1]:.2f}")
@@ -62,26 +57,22 @@ if action:
                 peg_ratio = company_info.get('pegRatio', 'Non disponible')
                 st.write(f"PEG Ratio : {peg_ratio}")
 
-                # Graphique RSI
                 fig_rsi = go.Figure()
-                fig_rsi.add_trace(go.Scatter(x=history.index, y=rsi, mode='lines', name='RSI'))
+                fig_rsi.add_trace(go.Scatter(x=rsi.index, y=rsi, mode='lines', name='RSI'))
                 fig_rsi.update_layout(title="RSI (14 jours)", xaxis_title="Date", yaxis_title="RSI")
                 st.plotly_chart(fig_rsi)
 
-                # Graphique MACD
                 fig_macd = go.Figure()
-                fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACD_12_26_9'], mode='lines', name='MACD'))
-                fig_macd.add_trace(go.Scatter(x=history.index, y=macd['MACDs_12_26_9'], mode='lines', name='Signal Line'))
+                fig_macd.add_trace(go.Scatter(x=macd.index, y=macd['MACD_12_26_9'], mode='lines', name='MACD'))
+                fig_macd.add_trace(go.Scatter(x=macd.index, y=macd['MACDs_12_26_9'], mode='lines', name='Signal Line'))
                 fig_macd.update_layout(title="MACD et ligne de signal", xaxis_title="Date", yaxis_title="MACD")
                 st.plotly_chart(fig_macd)
 
-                # Graphique OBV
                 fig_obv = go.Figure()
-                fig_obv.add_trace(go.Scatter(x=history.index, y=obv, mode='lines', name='OBV'))
+                fig_obv.add_trace(go.Scatter(x=obv.index, y=obv, mode='lines', name='OBV'))
                 fig_obv.update_layout(title="OBV (On-Balance Volume)", xaxis_title="Date", yaxis_title="OBV")
                 st.plotly_chart(fig_obv)
 
-            # Section pour le graphique interactif des prix de clôture et du volume
             with st.expander("Graphique interactif des prix de clôture et du volume"):
                 periode = st.selectbox(
                     "Sélectionnez une période pour afficher les données :",
@@ -112,7 +103,7 @@ if action:
 
                 fig.add_trace(go.Bar(
                     x=history.index,
-                    y=history['Volume'] / 1_000_000,  # Conversion en millions
+                    y=history['Volume'] / 1_000_000,
                     name='Volume (en millions)',
                     marker=dict(color='gray', opacity=0.3),
                     yaxis="y2"
@@ -163,7 +154,6 @@ if action:
         st.subheader("Une erreur s'est produite lors de la récupération des données. Veuillez vérifier le ticker.")
         st.error(str(e))
 
-# Barre latérale pour afficher les actions tendances et les articles d'actualité
 with st.sidebar:
     st.title("À la une !")
     trendy = getTrendy()

@@ -1,6 +1,6 @@
 import boto3
 import json
-from data_fetch import getInfo, getHistoricalData, writeFinancialReport, getBalanceSheet, getCashFlowStatement, getIncomeStatement, convertToJson
+from data_fetch import getInfo, getHistoricalData, getFinancialReport, convertToJson
 
 def create_client():
     s3 = boto3.client("s3")
@@ -26,9 +26,9 @@ def populate_bucket_historical_data(ticker_name, bucket_name = "tech-company-dat
 def populate_bucket_financial_data(ticker_name, bucket_name = "tech-company-data"):
     s3 = create_client()
     key = f"financial-data/{ticker_name}.json"
-    s3.put_object(Bucket=bucket_name, Key=key, Body=convertToJson(writeFinancialReport(ticker_name)).encode("utf-8"))
+    s3.put_object(Bucket=bucket_name, Key=key, Body=convertToJson(getFinancialReport(ticker_name)).encode("utf-8"))
 
-"""with open("../data/tech_company_tickers.json", "r") as file:
+with open("../data/tech_company_tickers.json", "r") as file:
     tickers = json.load(file)
     for element in tickers["tech_companies"]:
         try:
@@ -37,7 +37,7 @@ def populate_bucket_financial_data(ticker_name, bucket_name = "tech-company-data
         except Exception as e:
             print("the symbol that failed is: ", element)
             print(e)
-        #populate_bucket_financial_data(element)"""
+        populate_bucket_financial_data(element)
 
 with open("../data/inflation.json", "r") as file:
     try:
