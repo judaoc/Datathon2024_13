@@ -1,4 +1,4 @@
-# Datathon de Polyfinance 2024 (Équipe 13)
+# MarketIntelAI
 
 ## Authors
 
@@ -10,18 +10,31 @@
 
 ## Créé pour
 
-Ce projet a été créé pour le Datathon 2024 de PolyFinance
+Ce projet a été créé pour le Datathon 2024 de PolyFinance (Équipe 13)
 
-## Description
-Notre projet est capable de faire des résumés automatiques des rapports financiers en choisissant les mots clés. Il permet d'aider les analystes financiers en lui donnant les valeurs des actions les plus actives de la journée. Cela lui permet de rester au courant des mouvements dans le marché tout en consultant nos autres outils d'analyse. De plus, nous avons créé un outil utilisant l'IA générative. Il a été conçu avec des données d'inflation de plusieurs années, des données sur le taux d'intérêt. Nous lui avons aussi donné des données sur différentes compagnies du marché. Dans notre cas, nous avons seulement quelques compagnies, dont les plus grandes compagnies du secteur technologique. Les informations que nous lui avons données sont les informations sur les symboles, les historiques de leurs données depuis les 5 dernières années, les données financières comme le "Balance Sheet", le "Income Statement" et le "Cash Flow Statement". Grâce à cette base de données, qui est située dans S3, il est capable de générer des analyses futures sur les historiques des données de l'action, mais aussi sur les différentes données d'inflation et de taux d'intérêt. Lorsque l'analyste entre sur le site web, il est possible pour lui de consulter différents graphiques dont: le graphique de l'action ainsi que des différents indices comme RSI, MACD et OBV. Il est aussi possible pour l'analyste d'avoir des suggestions d'articles par rapport à l'action qu'il est en train de consulter. De plus, l'outil d'IA générative permet de donner une certaine analyse du stock et son sentiment général basé sur les différentes données qu'il a récoltées sur l'action. Enfin, notre interface permet aussi à l'analyste de consulter les principaux actionnaires liés à l'action recherchée.
+## Problème abordé 
+Les analystes financiers doivent manipuler avec des volumes massifs de données pour suivre les actions les plus actives et les nouvelles les plus importantes, analyser les tendances historiques et interpréter les impacts économiques de l’inflation et du taux d’intérêt. Cette surcharge de données rend difficile une prise de décision rapide et éclairée.
 
+## Description de la solution 
+MarketIntelAI automatise la synthèse des rapports financiers et analyse les tendances du marché pour fournir une vision claire et structurée des actions et des indicateurs économiques. 
+
+## Fonctionnalités clés
+-	**Résumé automatique des rapports financiers** : Génère des résumés clairs des documents financiers essentiels pour une analyse rapide.
+-	**Suivi des actions actives** : Affiche les valeurs des actions les plus actives en temps réel.
+-	**Analyses historiques et prédictives** : Utilise les données d’inflation, taux d’intérêt et historiques de compagnies pour prédire des tendances futures.
+-	**Visualisation des graphiques financiers** : Présente des graphiques personnalisés (RSI, MACD, OBV) pour chaque action.
+-	**Suggestions d’articles en lien avec les actions** : Propose des articles en fonction de l’action consultée, pour enrichir la compréhension de l’analyste.
+-	**Accès aux informations des principaux actionnaires** : Visualise les investisseurs clés pour une meilleure contextualisation.
+
+## Technologies et ressources utilisées 
+-	**Technologie AWS** : BedRock (modèle d’IA spécialisé en analyse d’effets des taux d’intérêts et d’inflation sur la valeur des stocks), S3 (stockage des données financières et historiques), Lambda ( permets la recherche d’informations pertinentes dans S3)
+-	**Sources de données** : Yahoo Finance (pour les données sur les infos des stocks, les nouvelles, les données historiques, les données du « Balance Sheet », le « Income Statement » et le « Cash Flow Statement »), US. Federal funds rate (les données sur le taux d’intérêt => https://www.statista.com/statistics/187616/effective-rate-of-us-federal-funds-monthly/) et FRED ( pour les données historiques de l’inflation => https://fred.stlouisfed.org/series/FPCPITOTLZGUSA)
 
 ## Dépendances
 Voici les dépendances qu'il faut avoir pour rouler le programme localement
 
 
--Vous devez utiliser la version de numpy 1.26.4 
- `pip install --force-reinstall numpy==1.26.4`
+-Vous devez utiliser la version de numpy 1.26.4 `pip install --force-reinstall numpy==1.26.4`
 
 -`pip install pandas pandas_ta yfinance yahoo_fin streamlit python-dotenv plotly lxml[html_clean] requests_html boto3 uuid`
 
