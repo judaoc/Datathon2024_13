@@ -189,6 +189,9 @@ if tab == "Rechercher une action":
 elif tab == "Communiquer avec Martha":
     placeholder.empty()
     st.subheader("Chat avec Martha")
+    show_full_description = st.checkbox("À propos de Martha", value=True)
+    if show_full_description:
+        st.write("Martha est un agent bedrock qui utilise des données financières passées (taux d'inflation, taux d'intéret) pour tenter prédire des évènements futurs hypothétiques. Merci de communiquer avec Martha en anglais et pour de meilleurs résultats utilisez des promts ressemblant à : Can you tell me how the AAPL stock price would be affected by a 8% interest rate in 2025 ?")
     user_message = st.text_input("Vous :")
     if user_message:
         response = communicate_with_martha(user_message)
