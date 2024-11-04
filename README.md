@@ -37,6 +37,8 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 
 -`pip install plotly`
 
+-`pip install plotly.graph_objs`
+
 -`pip install lxml[html_clean]`
 
 -`pip install json`
