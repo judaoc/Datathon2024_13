@@ -137,9 +137,9 @@ if action:
             with st.expander("Articles pertinents :"):
                 news_placeholder = st.empty()
                 news_placeholder.write("Accès à l'actualité...")
-                news = getSpecificNews("ffa0ad83fa8c4d87bef0c77c3fe41eeb", company_info.get('symbol'))
+                news = getSpecificNews(company_info.get('symbol'))
                 news_placeholder.empty()
-                articles_list = "\n".join([f"- [{cleanTitle(title).strip()}]({url})" for title, url in news])
+                articles_list = "\n".join([f"- [{cleanTitle(article.get('title')).strip()}]({article.get('link')})" for article in news])
                 news_placeholder.markdown(articles_list)
 
             with st.expander("Analyse de Claude :"):
@@ -166,6 +166,6 @@ with st.sidebar:
         st.markdown(f"{stock_name}: <span style='color:{color};'>{price_change}</span>", unsafe_allow_html=True)
 
     st.title("Articles")
-    news = getNews("ffa0ad83fa8c4d87bef0c77c3fe41eeb")
-    for title, url in news:
-        st.sidebar.markdown(f"[{title}]({url})")
+    news = getNews()
+    for article in news:
+        st.sidebar.markdown(f"[{article.get('title')}]({article.get('link')})")
