@@ -8,7 +8,7 @@ from streamlit_option_menu import option_menu
 from data_fetch import getFinancialReport, getTrendy, get_rsi, get_macd, get_obv
 from news_request import getNews, getSpecificNews
 from json_claude import analyze_json_data
-from martha_communication import communicate_with_martha  # Import de la fonction pour Martha
+from martha_communication import communicate_with_martha
 
 st.title("Application Financière")
 
@@ -16,7 +16,6 @@ def cleanTitle(article_text):
     cleaned_text = re.sub(r'\s+', ' ', article_text.replace('\n', ' '))
     return cleaned_text
 
-# Menu d'onglets avec une interface utilisateur améliorée
 tab = option_menu(
     menu_title=None,
     options=["Rechercher une action", "Communiquer avec Martha"],
@@ -38,12 +37,15 @@ tab = option_menu(
     }
 )
 
-# Espace temporaire pour éviter le chevauchement lors du changement d'onglet
 placeholder = st.empty()
+
+@st.cache_data(ttl=6000)
+def fetch_news():
+    return getNews()
 
 if tab == "Rechercher une action":
     placeholder.empty()
-    time.sleep(0.05)  # Pause pour stabiliser l'interface
+    time.sleep(0.05)
 
     action = st.text_input("Entrez le nom de l'action")
 
@@ -184,7 +186,6 @@ if tab == "Rechercher une action":
             st.subheader("Une erreur s'est produite lors de la récupération des données. Veuillez vérifier le ticker.")
             st.error(str(e))
 
-# Onglet "Communiquer avec Martha"
 elif tab == "Communiquer avec Martha":
     placeholder.empty()
     st.subheader("Chat avec Martha")
@@ -193,7 +194,6 @@ elif tab == "Communiquer avec Martha":
         response = communicate_with_martha(user_message)
         st.write(f"Martha : {response}")
 
-# Barre latérale pour afficher les actions tendances et les articles d'actualité
 with st.sidebar:
     st.title("À la une !")
     trendy = getTrendy()
@@ -205,7 +205,9 @@ with st.sidebar:
         color = 'green' if price_change_value > 0 else 'red'
         st.markdown(f"{stock_name}: <span style='color:{color};'>{price_change}</span>", unsafe_allow_html=True)
 
+    if 'news' not in st.session_state:
+        st.session_state.news = getNews()
+
     st.title("Articles")
-    news = getNews()
-    for article in news:
+    for article in st.session_state.news:
         st.sidebar.markdown(f"[{article.get('title')}]({article.get('link')})")
