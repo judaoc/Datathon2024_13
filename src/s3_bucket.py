@@ -1,6 +1,6 @@
 import boto3
 import json
-from data_request import getInfo, getHistoricalData, writeFinancialReport, getBalanceSheet, getCashFlowStatement, getIncomeStatement, convertToJson
+from data_fetch import getInfo, getHistoricalData, writeFinancialReport, getBalanceSheet, getCashFlowStatement, getIncomeStatement, convertToJson
 
 def create_client():
     s3 = boto3.client("s3")
