@@ -41,10 +41,11 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 
 ## Exécuter le programme localement
 Vous devez être dans le dossier `src`
+Puis entrez `streamlit run web_page.py`
 
-**Il faut avoir des credentials valides AWS qu'il faut entrer dans la console dans la racine du projet**
-
-`streamlit run web_page.py`
+**Si vous obtenez une erreur en lien avec l'expiration de security token, veuillez les entrer manuellement dans la console, à la racine du projet.
+Bien que le déploiement soit fait grâce à un EC2 et qu'un rôle IAM donnant tous les accès a été attribué à l'instance, il semble y avoir une interdiction au niveau du SCP.
+Puisque nous n'avons pas les accès nécessaires, le token devra être périodiquement mis à jour manuellement (sur la version déployée comme sur une version locale)**
 
 ## Démonstration
 
