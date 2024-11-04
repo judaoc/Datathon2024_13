@@ -54,12 +54,9 @@ def getFinancialReport(ticker):
 
     return financialReport
 
-
-#returns the historical data in Dataframe from yfinance (ticker is the symbol, example: 'AAPL', period is the time period, example: '1y', interval is the time interval, example: '1d')
 def getHistoricalData(ticker, period = '1y', interval = '1d'):
     data = yf.Ticker(ticker)
     return data.history(period=period, interval=interval)
-
 
 def patched_raw_get_daily_info(url):
     session = HTMLSession()
@@ -68,7 +65,6 @@ def patched_raw_get_daily_info(url):
     tables = pd.read_html(html_content)
     df = tables[0].copy()
     
-    # List of columns that need to be dropped
     columns_to_drop = [
         '52 Week Range',
         'PE Ratio (TTM)',
@@ -92,14 +88,12 @@ def patched_raw_get_daily_info(url):
     session.close()
     return df
 
-# Replace the original function
 si._raw_get_daily_info = patched_raw_get_daily_info
 
 def getTrendy():
     df = si.get_day_most_active()
     return df.head(8)
 
-#indicators (RSI, MACD, OBV)
 def getIndicators(dataframe):
     dataframe["RSI_14"] = ta.rsi(dataframe["Close"], length=14)
     dataframe["OBV"] = ta.obv(dataframe["Close"], dataframe["Volume"])

@@ -208,9 +208,11 @@ with st.sidebar:
         color = 'green' if price_change_value > 0 else 'red'
         st.markdown(f"{stock_name}: <span style='color:{color};'>{price_change}</span>", unsafe_allow_html=True)
 
+    st.title("Articles")
+    news_placeholder = st.empty()
+    news_placeholder.write("Accès à l'actualité... \n Merci de patientez :)")
     if 'news' not in st.session_state:
         st.session_state.news = getNews()
-
-    st.title("Articles")
+    news_placeholder.empty()
     for article in st.session_state.news:
         st.sidebar.markdown(f"[{article.get('title')}]({article.get('link')})")
