@@ -39,7 +39,7 @@ Voici les dépendances qu'il faut avoir pour rouler le programme localement
 -`pip install pandas pandas_ta yfinance yahoo_fin streamlit python-dotenv plotly lxml[html_clean] requests_html boto3 uuid`
 
 
-## Run le programme localement
+## Exécuter le programme localement
 Vous devez être dans le dossier `src`
 
 **Il faut avoir des credentials valides AWS qu'il faut entrer dans la console dans la racine du projet**
