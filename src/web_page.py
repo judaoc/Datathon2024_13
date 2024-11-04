@@ -75,7 +75,7 @@ if tab == "Rechercher une action":
                             for index, row in holders.iterrows():
                                 holder_name = row.get('Holder', 'Nom indisponible')
                                 holder_percentage = row.get('pctHeld', 0) * 100
-                                st.write(f"- {holder_name}: {holder_percentage:.4f}%")
+                                st.write(f"- {holder_name}: {holder_percentage:.2f}%")
                         else:
                             st.write("Informations sur les principaux actionnaires non disponibles.")
                     except Exception as e:
@@ -109,7 +109,7 @@ if tab == "Rechercher une action":
                     fig_obv.update_layout(title="OBV (On-Balance Volume)", xaxis_title="Date", yaxis_title="OBV")
                     st.plotly_chart(fig_obv)
 
-                with st.expander("Graphique interactif des prix de clôture et du volume"):
+                with st.expander("Prix de clôture et volume"):
                     periode = st.selectbox(
                         "Sélectionnez une période pour afficher les données :",
                         options=["1 mois", "3 mois", "6 mois", "1 an", "5 ans", "10 ans"]
